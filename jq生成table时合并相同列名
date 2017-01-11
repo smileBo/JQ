@@ -1,0 +1,103 @@
+  function getProductioninfodata() {
+            layer.load();
+            var org;
+            $("#Sfactory").html("");
+            var sval = $("#Factory option:selected").val();
+            var Sfactory = $("#Factory option:selected").text();
+            $("#Sfactory").html(Sfactory);
+            if (sval == undefined || sval == "null&null") {
+            $("#Sfactory").html( Cookie.get('ProductioninfoFactory'));
+                if (Cookie.get('ProductioninfoORG') != null) {
+                    org = Cookie.get('ProductioninfoORG');
+                }
+                else {
+                    org = 'null';
+                }
+            }
+            else {
+                var arrys = new Array();
+                arrys = sval.split("&");
+                org = arrys[1];
+                Cookie.set("ProductioninfoFactory", Sfactory, 30);
+                Cookie.set("ProductioninfoORG", org, 30)
+            }
+            var f = "null";
+            var arryfactory = new Array(); //第一创建一个集合放会重复的数据
+            $.ajax({
+                url: "../Product/getProductioninfodata",
+                type: 'post',
+                data: { "org": org },
+                dataType: 'json',
+                success: function (data) {
+                    $("#tbody").html("");
+                    $.each(data, function myfunction(index, obj) {
+                        arryfactory.push(obj.Factory);//添加数据
+                        var tr = $("<tr/>");
+                        var Factory = $("<td id='t" + index + "' />").html(obj.Factory); //rowspan=2
+                        var Equipname = $("<td />").html(obj.Equipname);
+                        var planProduce = $("<td/>").html(obj.planProduce);
+                        var TargetQty = $("<td/>").html(obj.TargetQty);
+                        var mQty = $("<td/>").html(obj.mQty);
+                        var cy = $("<td />").html(obj.cy);
+                        var MBdcl = $("<td/>").html(obj.MBdcl + " %");
+                        var yieldRate = $("<td style='color:black; background-color:" + setcolor("P", obj.yieldRate) + "'/>").html(obj.yieldRate + " %");
+                        var MBsjl = $("<td/>").html(obj.MBsjl + " %");
+                        var TimeJdl = $("<td style='color:black; background-color:" + setcolor("P", obj.TimeJdl) + "'/>").html(obj.TimeJdl + " %");
+                        var MBll = $("<td/>").html(obj.MBll + " %");
+                        var PassqtyLv = $("<td style='color:black; background-color:" + setcolor("P", obj.PassqtyLv) + "'/>").html(obj.PassqtyLv + " %");
+                        var FaultTime = $("<td style='color:black; background-color:" + setcolor("M", obj.FaultTime) + "' />").html(obj.FaultTime);
+                        var dDate = $("<td/>").html(obj.dDate);
+                        tr.append(Factory, Equipname, planProduce, TargetQty, mQty, cy, MBdcl, yieldRate, MBsjl, TimeJdl, MBll, PassqtyLv, FaultTime, dDate);
+                        $("#tbody").append(tr);
+                    });
+                    var nexthtml = "1";
+                    var html
+
+                    var keys = {}; //定义一个对象, 用于保存统计数据
+
+                    //遍历 数组
+                    $.each(arryfactory, function (index, val) {
+                        keys[val] = (keys[val] || 0) + 1; //累计次数
+                    });
+//                    alert(keys['虎耀廠-3F裝配']);  //查询那个值出现的次数，用于rowspan
+                    $("#tbody tr td:nth-child(1)").each(function myfunction(index) {
+                    //循环第一列，第一条数据跳过，用下一条比上一条，相同就把本条设为隐藏
+                        if (index == 0) {
+                            $(this).prop("rowspan", keys[$(this).html()]);
+                            $(this).css("color", 'yellow');
+                            return true;
+
+                        }
+                        html = $(this).parent().prev().children(":first").html();
+                        if ($(this).html()==html) {
+                            $(this).css("display", "none");
+                        }
+                        else {
+                            $(this).prop("rowspan", keys[$(this).html()]);
+                            $(this).css("color", 'yellow');
+                        }
+                        //                        num++;
+                        //                       
+                        //                        if ($(this).html() == html) {
+                        //                            $(this).css("display", "none");
+                        //                        }
+                        //                        else {
+                        //                            num = 0;
+                        //                            $(this).prop("rowspan", "2");
+                        //                        }
+
+
+                        //                        html = $(this).html();
+                        //                        if (html == lasthtml) {
+                        //                            $(this).css("display", "none");
+                        //                        }
+                        //                        else {
+                        //                            $(this).prop("rowspan", "2");
+                        //                        }
+                        //                        lasthtml = html;
+                    });
+                    layer.closeAll("loading");
+                },
+                error: function () { layer.closeAll("loading"); }
+            });
+        }
