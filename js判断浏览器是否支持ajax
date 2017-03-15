@@ -1,0 +1,5 @@
+function request(){
+  var xmlHttp=GetXmlHttpObject();
+  if(xmlHttp==null){
+    alert("您的浏览器不支持AJAX!");
+  }
