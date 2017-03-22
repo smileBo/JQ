@@ -1,0 +1,36 @@
+     $.ajax({
+            url: "../../Schedule/SendMaterial",
+            type: "post",
+            data: { "org": org },
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+                $("#tbody").html("");
+                $.each(data, function myfunction(index, obj) {
+                    var tr = $("<tr/>");
+                    var line = $("<td/>").html(obj.Line);
+                    var PartNo = $("<td/>").html(obj.PartNo);
+                    var DemandQty = $("<td/>").html(obj.DemandQty);
+                    var SupplementQty = $("<td/>").html(obj.SupplementQty);
+                    var surplus = $("<td/>").html(obj.surplus);
+                    var Preparematerial = obj.Preparematerial == 0 ? $("<td/>").html("<div  style=' height:20px;width:20px;border-radius: 50%; background-color:#00FF00;margin:auto'></div>") : $("<td />").html("<div  style=' height:20px;width:20px;border-radius: 50%; background-color:red;margin:auto'></div>");
+                    //var FL = $("<td/>").html('<button onclick="modelshow(1,'+obj.Line+', '+obj.LineId+',' + obj.PartNo + ')"  class="btn btn-large btn-primary " type="button" ><span style="color:#04F917" class="glyphicon glyphicon-floppy-open"></span> 發料</button>');
+                    var FL = $("<td/>").html('<button onclick="modelshow(1,' + "'" + '' + obj.Line + '' + "'" + ',' + "'" + '' + obj.LineId + '' + "'" + ',' + "'" + '' + obj.PartNo + '' + "'" + ')"  class="btn btn-large btn-primary " type="button" ><span style="color:#04F917" class="glyphicon glyphicon-floppy-open"></span> 發料</button>');
+                    var TL = $("<td/>").html('<button onclick="modelshow(0,' + "'" + '' + obj.Line + '' + "'" + ',' + "'" + '' + obj.LineId + '' + "'" + ',' + "'" + '' + obj.PartNo + '' + "'" + ')"  class="btn btn-large btn-primary " type="button" ><span style="color:#F10C41" class="glyphicon glyphicon-floppy-remove"></span> 退料</button>');
+                    var PackQty = $("<td/>").html(obj.PackQty);
+                    var SupplementMax = $("<td/>").html(obj.SupplementMax);
+                    var SupplementMin = $("<td/>").html(obj.SupplementMin);
+                    tr.append(line, PartNo, DemandQty, SupplementQty, surplus, Preparematerial, FL, TL, PackQty,SupplementMax,SupplementMin);
+                    $("#tbody").append(tr);
+                });
+            }
+        });
+        
+        
+        
+        ------------------------
+        var stime = $("<td />").html('<input name="starttime" type="text" style="width: 100px; height: 30px; text-align: center" value="' + obj.StartTime + '" class="Wdate" onfocus="WdatePicker({dateFmt:' + "'" + 'HH:mm' + "'" + '})" />');
+        
+        
+        --------------
+         加上单引号》》》     ' + "'" + '
